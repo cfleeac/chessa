@@ -1,0 +1,278 @@
+{
+  "testScenarios": [
+    {
+      "name": "Standard Market Conditions",
+      "description": "Typical market scenario with moderate gold prices and standard markup",
+      "inputs": {
+        "goldPricePurchase": 2800,
+        "goldPriceToday": 2850,
+        "itemWeight": 10,
+        "laborMin": 50,
+        "laborMax": 100,
+        "markupRate": 1.15,
+        "discountRate": 0.9,
+        "itemCost": 5000
+      },
+      "expectedResults": {
+        "dashboardPrice": 3277.50,
+        "18K": {
+          "cost": 21500.00,
+          "displayPrice": 24725.00,
+          "minSellingPrice": 22252.50
+        },
+        "21K": {
+          "cost": 25000.00,
+          "displayPrice": 31184.38,
+          "originalPrice": 29493.75,
+          "minSellingPrice": 26843.75
+        },
+        "22K": {
+          "cost": 26085.00,
+          "displayPrice": 32511.30,
+          "originalPrice": 30815.61,
+          "minSellingPrice": 28012.11
+        },
+        "24K": {
+          "cost": 28500.00,
+          "displayPrice": 32775.00,
+          "minSellingPrice": 29497.50
+        },
+        "watch": {
+          "cost": 5000.00,
+          "displayPrice": 5750.00,
+          "minSellingPrice": 5550.00
+        }
+      }
+    },
+    {
+      "name": "High Gold Price Scenario",
+      "description": "Testing with elevated gold prices and higher markup",
+      "inputs": {
+        "goldPricePurchase": 3500,
+        "goldPriceToday": 3600,
+        "itemWeight": 15,
+        "laborMin": 60,
+        "laborMax": 120,
+        "markupRate": 1.25,
+        "discountRate": 0.85,
+        "itemCost": 7500
+      },
+      "expectedResults": {
+        "dashboardPrice": 4500.00,
+        "18K": {
+          "cost": 40275.00,
+          "displayPrice": 50343.75,
+          "minSellingPrice": 42792.19
+        },
+        "21K": {
+          "cost": 46815.00,
+          "displayPrice": 60131.25,
+          "originalPrice": 58734.38,
+          "minSellingPrice": 49924.22
+        },
+        "22K": {
+          "cost": 48890.85,
+          "displayPrice": 62771.25,
+          "originalPrice": 61363.59,
+          "minSellingPrice": 52159.05
+        },
+        "24K": {
+          "cost": 53400.00,
+          "displayPrice": 66750.00,
+          "minSellingPrice": 56737.50
+        },
+        "watch": {
+          "cost": 7500.00,
+          "displayPrice": 9375.00,
+          "minSellingPrice": 9175.00
+        }
+      }
+    },
+    {
+      "name": "Low Gold Price Scenario",
+      "description": "Testing with lower gold prices and conservative markup",
+      "inputs": {
+        "goldPricePurchase": 2200,
+        "goldPriceToday": 2150,
+        "itemWeight": 5,
+        "laborMin": 30,
+        "laborMax": 70,
+        "markupRate": 1.10,
+        "discountRate": 0.95,
+        "itemCost": 3000
+      },
+      "expectedResults": {
+        "dashboardPrice": 2420.00,
+        "18K": {
+          "cost": 8400.00,
+          "displayPrice": 9240.00,
+          "minSellingPrice": 8778.00
+        },
+        "21K": {
+          "cost": 9775.00,
+          "displayPrice": 11682.50,
+          "originalPrice": 10618.75,
+          "minSellingPrice": 10087.81
+        },
+        "22K": {
+          "cost": 10208.70,
+          "displayPrice": 12199.60,
+          "originalPrice": 11087.39,
+          "minSellingPrice": 10533.02
+        },
+        "24K": {
+          "cost": 11150.00,
+          "displayPrice": 12265.00,
+          "minSellingPrice": 11651.75
+        },
+        "watch": {
+          "cost": 3000.00,
+          "displayPrice": 3300.00,
+          "minSellingPrice": 3100.00
+        }
+      }
+    },
+    {
+      "name": "Price Reversal Scenario",
+      "description": "Testing when purchase price is higher than today's price",
+      "inputs": {
+        "goldPricePurchase": 3000,
+        "goldPriceToday": 2800,
+        "itemWeight": 8,
+        "laborMin": 45,
+        "laborMax": 90,
+        "markupRate": 1.18,
+        "discountRate": 0.88,
+        "itemCost": 4500
+      },
+      "expectedResults": {
+        "dashboardPrice": 3540.00,
+        "18K": {
+          "cost": 18360.00,
+          "displayPrice": 21664.80,
+          "minSellingPrice": 19065.02
+        },
+        "21K": {
+          "cost": 21360.00,
+          "displayPrice": 26605.00,
+          "originalPrice": 25515.00,
+          "minSellingPrice": 22453.20
+        },
+        "22K": {
+          "cost": 22308.80,
+          "displayPrice": 27782.26,
+          "originalPrice": 26654.59,
+          "minSellingPrice": 23456.04
+        },
+        "24K": {
+          "cost": 24360.00,
+          "displayPrice": 28744.80,
+          "minSellingPrice": 25295.42
+        },
+        "watch": {
+          "cost": 4500.00,
+          "displayPrice": 5310.00,
+          "minSellingPrice": 5110.00
+        }
+      }
+    },
+    {
+      "name": "Heavy Item Scenario",
+      "description": "Testing with a heavy gold item (50 grams)",
+      "inputs": {
+        "goldPricePurchase": 2900,
+        "goldPriceToday": 2950,
+        "itemWeight": 50,
+        "laborMin": 55,
+        "laborMax": 110,
+        "markupRate": 1.20,
+        "discountRate": 0.92,
+        "itemCost": 10000
+      },
+      "expectedResults": {
+        "dashboardPrice": 3540.00,
+        "18K": {
+          "cost": 111500.00,
+          "displayPrice": 133800.00,
+          "minSellingPrice": 123096.00
+        },
+        "21K": {
+          "cost": 129625.00,
+          "displayPrice": 157031.25,
+          "originalPrice": 153562.50,
+          "minSellingPrice": 141277.50
+        },
+        "22K": {
+          "cost": 135463.50,
+          "displayPrice": 164074.50,
+          "originalPrice": 160429.13,
+          "minSellingPrice": 147594.79
+        },
+        "24K": {
+          "cost": 147750.00,
+          "displayPrice": 177300.00,
+          "minSellingPrice": 163116.00
+        },
+        "watch": {
+          "cost": 10000.00,
+          "displayPrice": 12000.00,
+          "minSellingPrice": 11800.00
+        }
+      }
+    },
+    {
+      "name": "Light Item Scenario",
+      "description": "Testing with a very light gold item (1 gram)",
+      "inputs": {
+        "goldPricePurchase": 2750,
+        "goldPriceToday": 2775,
+        "itemWeight": 1,
+        "laborMin": 20,
+        "laborMax": 50,
+        "markupRate": 1.12,
+        "discountRate": 0.93,
+        "itemCost": 1500
+      },
+      "expectedResults": {
+        "dashboardPrice": 3108.00,
+        "18K": {
+          "cost": 2082.50,
+          "displayPrice": 2332.40,
+          "minSellingPrice": 2169.13
+        },
+        "21K": {
+          "cost": 2426.25,
+          "displayPrice": 2738.25,
+          "originalPrice": 2764.88,
+          "minSellingPrice": 2572.34
+        },
+        "22K": {
+          "cost": 2541.68,
+          "displayPrice": 2851.95,
+          "originalPrice": 2891.00,
+          "minSellingPrice": 2688.63
+        },
+        "24K": {
+          "cost": 2770.00,
+          "displayPrice": 3102.40,
+          "minSellingPrice": 2885.23
+        },
+        "watch": {
+          "cost": 1500.00,
+          "displayPrice": 1680.00,
+          "minSellingPrice": 1480.00
+        }
+      }
+    }
+  ],
+  "validationRules": {
+    "tolerance": 0.01,
+    "notes": [
+      "Dashboard Price = Max(goldPricePurchase, goldPriceToday) × markupRate",
+      "For 21K/22K: System picks highest value between purchase and today calculations",
+      "Watch minimum selling price = displayPrice - 200 (not discount rate)",
+      "All monetary values should be rounded to 2 decimal places",
+      "Karat factors: 18K=0.75, 21K=0.875, 22K=0.917, 24K=1.0"
+    ]
+  }
+}

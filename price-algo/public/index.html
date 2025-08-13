@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold Pricing Algorithm Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding: 20px;
+      color: #212529;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #212529;
+      color: #ffffff;
+      padding: 32px;
+      text-align: center;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      color: #adb5bd;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 200px);
+    }
+
+    .input-panel {
+      background: #f8f9fa;
+      padding: 32px;
+      border-right: 1px solid #dee2e6;
+      overflow-y: auto;
+      max-height: calc(100vh - 150px);
+    }
+
+    .input-panel h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #212529;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #495057;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background: #ffffff;
+      color: #212529;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      outline: none;
+      border-color: #495057;
+      box-shadow: 0 0 0 2px rgba(73, 80, 87, 0.1);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #212529;
+      margin: 28px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #dee2e6;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .results-container {
+      padding: 32px;
+      background: #ffffff;
+    }
+
+    .results-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .result-card {
+      background: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .result-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .result-card h3 {
+      color: #212529;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #212529;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .karat-badge {
+      background: #212529;
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .price-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f3f5;
+    }
+
+    .price-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .price-label {
+      color: #6c757d;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .price-value {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #212529;
+    }
+
+    .price-value.highlight {
+      color: #212529;
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .dashboard-price {
+      background: #212529;
+      color: #ffffff;
+      padding: 24px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .dashboard-price h3 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #adb5bd;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .dashboard-price .price {
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: -1px;
+    }
+
+    .dashboard-price .formula-inline {
+      color: #868e96;
+      font-size: 0.875rem;
+      margin-top: 8px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .test-panel {
+      background: #f8f9fa;
+      padding: 24px;
+      border-radius: 6px;
+      margin-top: 32px;
+      border: 1px solid #dee2e6;
+    }
+
+    .test-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+    }
+
+    .test-panel h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #212529;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: 1px solid #212529;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: transparent;
+      color: #212529;
+    }
+
+    .btn:hover {
+      background: #212529;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #212529;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #000000;
+      border-color: #000000;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: #212529;
+      border: 1px solid #ced4da;
+    }
+
+    .btn-secondary:hover {
+      background: #212529;
+      color: #ffffff;
+      border-color: #212529;
+    }
+
+    /* Mathematical Formula Display Styles */
+    .formula-display {
+      background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 16px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+
+    .formula-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6c757d;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .math-section {
+      margin-bottom: 20px;
+    }
+
+    .math-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .math-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .math-equation {
+      background: #ffffff;
+      border-left: 3px solid #212529;
+      padding: 16px 20px;
+      margin: 8px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .math-step {
+      margin: 12px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .math-step::before {
+      content: "=";
+      position: absolute;
+      left: 0;
+      color: #6c757d;
+      font-weight: 300;
+    }
+
+    .math-var {
+      color: #0056b3;
+      font-style: italic;
+      font-weight: 500;
+      margin: 0 2px;
+    }
+
+    .math-num {
+      color: #212529;
+      font-weight: 600;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      background: #f1f3f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin: 0 2px;
+    }
+
+    .math-op {
+      color: #6c757d;
+      margin: 0 6px;
+      font-weight: 400;
+    }
+
+    .math-result {
+      color: #000000;
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: #e7f3ff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .math-fraction {
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+      margin: 0 8px;
+    }
+
+    .math-numerator {
+      border-bottom: 2px solid #212529;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+    }
+
+    .math-denominator {
+      padding-top: 4px;
+    }
+
+    .math-group {
+      display: inline-block;
+      position: relative;
+      padding: 0 4px;
+    }
+
+    .math-paren {
+      font-size: 1.3em;
+      color: #6c757d;
+      font-weight: 300;
+    }
+
+    .math-explanation {
+      font-size: 0.85rem;
+      color: #6c757d;
+      font-style: italic;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .input-panel {
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+        max-height: none;
+      }
+
+      .results-panel {
+        grid-template-columns: 1fr;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .dashboard-price .price {
+        font-size: 2rem;
+      }
+
+      .math-equation {
+        font-size: 0.95rem;
+        padding: 12px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script>
+    // State management
+    const state = {
+      goldPricePurchase: 2800,
+      goldPriceToday: 2850,
+      itemWeight: 10,
+      laborMin: 50,
+      laborMax: 100,
+      markupRate: 1.15,
+      discountRate: 0.9,
+      itemCost: 5000,
+      showFormulas: false
+    };
+    
+    const karatFactors = {
+      '18K': 0.75,
+      '21K': 0.875,
+      '22K': 0.917,
+      '24K': 1.0
+    };
+    
+    // Calculation functions
+    function calculateDashboardPrice() {
+      const highestPrice = Math.max(state.goldPricePurchase, state.goldPriceToday);
+      return highestPrice * state.markupRate;
+    }
+    
+    function calculate18K24K(karat) {
+      const factor = karatFactors[karat];
+      const cost = (state.goldPricePurchase * factor + state.laborMin) * state.itemWeight;
+      const displayPrice = cost * state.markupRate;
+      const minSellingPrice = displayPrice * state.discountRate;
+      
+      return {
+        cost: cost.toFixed(2),
+        displayPrice: displayPrice.toFixed(2),
+        originalPrice: displayPrice.toFixed(2),
+        minSellingPrice: minSellingPrice.toFixed(2),
+        formula: {
+          cost: {
+            equation: `Cost = (Gold Price × Karat Factor + Min Labor) × Weight`,
+            steps: [
+              `<span class="math-paren">(</span><span class="math-num">${state.goldPricePurchase}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span>`,
+              `<span class="math-paren">(</span><span class="math-num">${(state.goldPricePurchase * factor).toFixed(2)}</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span>`,
+              `<span class="math-num">${(state.goldPricePurchase * factor + state.laborMin).toFixed(2)}</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span>`,
+              `<span class="math-result">$${cost.toFixed(2)}</span>`
+            ]
+          },
+          display: {
+            equation: `Display Price = Cost × Markup Rate`,
+            steps: [
+              `<span class="math-num">${cost.toFixed(2)}</span> <span class="math-op">×</span> <span class="math-num">${state.markupRate}</span>`,
+              `<span class="math-result">$${displayPrice.toFixed(2)}</span>`
+            ]
+          },
+          minSelling: {
+            equation: `Min Selling Price = Display Price × Discount Rate`,
+            steps: [
+              `<span class="math-num">${displayPrice.toFixed(2)}</span> <span class="math-op">×</span> <span class="math-num">${state.discountRate}</span>`,
+              `<span class="math-result">$${minSellingPrice.toFixed(2)}</span>`
+            ]
+          }
+        }
+      };
+    }
+    
+    function calculate21K22K(karat) {
+      const factor = karatFactors[karat];
+      const cost = (state.goldPricePurchase * factor + state.laborMin) * state.itemWeight;
+      
+      const dashboardPrice = calculateDashboardPrice();
+      const displayGoldRate = dashboardPrice * factor;
+      const displayPrice = displayGoldRate * state.itemWeight + state.laborMin;
+      
+      // Calculate both options for original price
+      const option1Max = ((state.goldPricePurchase * factor * state.markupRate) + state.laborMax) * state.itemWeight;
+      const option2Max = ((state.goldPriceToday * factor * state.markupRate) + state.laborMax) * state.itemWeight;
+      const originalPrice = Math.max(option1Max, option2Max);
+      
+      // Calculate both options for minimum selling price
+      const option1Min = ((state.goldPricePurchase * factor * state.markupRate) + state.laborMin) * state.itemWeight;
+      const option2Min = ((state.goldPriceToday * factor * state.markupRate) + state.laborMin) * state.itemWeight;
+      const minSellingPrice = Math.max(option1Min, option2Min);
+      
+      return {
+        cost: cost.toFixed(2),
+        displayPrice: displayPrice.toFixed(2),
+        originalPrice: originalPrice.toFixed(2),
+        minSellingPrice: minSellingPrice.toFixed(2),
+        formula: {
+          cost: {
+            equation: `Cost = (Gold Price × Karat Factor + Min Labor) × Weight`,
+            steps: [
+              `<span class="math-paren">(</span><span class="math-num">${state.goldPricePurchase}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span>`,
+              `<span class="math-paren">(</span><span class="math-num">${(state.goldPricePurchase * factor).toFixed(2)}</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span>`,
+              `<span class="math-result">$${cost.toFixed(2)}</span>`
+            ]
+          },
+          display: {
+            equation: `Display Price = (Dashboard Gold × Karat) × Weight + Labor`,
+            steps: [
+              `Dashboard Gold Rate = <span class="math-num">${dashboardPrice.toFixed(2)}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> = <span class="math-num">${displayGoldRate.toFixed(2)}</span>`,
+              `<span class="math-num">${displayGoldRate.toFixed(2)}</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span>`,
+              `<span class="math-num">${(displayGoldRate * state.itemWeight).toFixed(2)}</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin.toFixed(2)}</span>`,
+              `<span class="math-result">$${displayPrice.toFixed(2)}</span>`
+            ]
+          },
+          original: {
+            equation: `Original Price = MAX(Purchase-based, Today-based)`,
+            steps: [
+              `Purchase-based:`,
+              `<span class="math-paren">(</span><span class="math-paren">(</span><span class="math-num">${state.goldPricePurchase}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> <span class="math-op">×</span> <span class="math-num">${state.markupRate}</span><span class="math-paren">)</span> <span class="math-op">+</span> <span class="math-num">${state.laborMax}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span> = <span class="math-num">${option1Max.toFixed(2)}</span>`,
+              `Today-based:`,
+              `<span class="math-paren">(</span><span class="math-paren">(</span><span class="math-num">${state.goldPriceToday}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> <span class="math-op">×</span> <span class="math-num">${state.markupRate}</span><span class="math-paren">)</span> <span class="math-op">+</span> <span class="math-num">${state.laborMax}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span> = <span class="math-num">${option2Max.toFixed(2)}</span>`,
+              `MAX(<span class="math-num">${option1Max.toFixed(2)}</span>, <span class="math-num">${option2Max.toFixed(2)}</span>) = <span class="math-result">$${originalPrice.toFixed(2)}</span>`
+            ]
+          },
+          minSelling: {
+            equation: `Min Selling Price = MAX(Purchase-based, Today-based)`,
+            steps: [
+              `Purchase-based:`,
+              `<span class="math-paren">(</span><span class="math-paren">(</span><span class="math-num">${state.goldPricePurchase}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> <span class="math-op">×</span> <span class="math-num">${state.markupRate}</span><span class="math-paren">)</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span> = <span class="math-num">${option1Min.toFixed(2)}</span>`,
+              `Today-based:`,
+              `<span class="math-paren">(</span><span class="math-paren">(</span><span class="math-num">${state.goldPriceToday}</span> <span class="math-op">×</span> <span class="math-num">${factor}</span> <span class="math-op">×</span> <span class="math-num">${state.markupRate}</span><span class="math-paren">)</span> <span class="math-op">+</span> <span class="math-num">${state.laborMin}</span><span class="math-paren">)</span> <span class="math-op">×</span> <span class="math-num">${state.itemWeight}</span> = <span class="math-num">${option2Min.toFixed(2)}</span>`,
+              `MAX(<span class="math-num">${option1Min.toFixed(2)}</span>, <span class="math-num">${option2Min.toFixed(2)}</span>) = <span class="math-result">$${minSellingPrice.toFixed(2)}</span>`
+            ]
+          }
+        }
+      };
+    }
+    
+    function calculateWatch() {
+      const displayPrice = state.itemCost * state.markupRate;
+      const minSellingPrice = displayPrice - 200;
+      
+      return {
+        cost: state.itemCost.toFixed(2),
+        displayPrice: displayPrice.toFixed(2),
+        originalPrice: displayPrice.toFixed(2),
+        minSellingPrice: minSellingPrice.toFixed(2),
+        formula: {
+          cost: {
+            equation: `Cost = Item Cost`,
+            steps: [
+              `<span class="math-result">$${state.itemCost.toFixed(2)}</span>`
+            ]
+          },
+          display: {
+            equation: `Display Price = Item Cost × Markup Rate`,
+            steps: [
+              `<span class="math-num">${state.itemCost.toFixed(2)}</span> <span class="math-op">×</span> <span class="math-num">${state.markupRate}</span>`,
+              `<span class="math-result">$${displayPrice.toFixed(2)}</span>`
+            ]
+          },
+          minSelling: {
+            equation: `Min Selling Price = Display Price − Fixed Discount`,
+            steps: [
+              `<span class="math-num">${displayPrice.toFixed(2)}</span> <span class="math-op">−</span> <span class="math-num">200</span>`,
+              `<span class="math-result">$${minSellingPrice.toFixed(2)}</span>`
+            ]
+          }
+        }
+      };
+    }
+    
+    // Format formula HTML
+    function formatFormula(formulaData) {
+      let html = '<div class="formula-display">';
+      html += '<div class="formula-title">Mathematical Breakdown</div>';
+      
+      // Cost calculation
+      html += '<div class="math-section">';
+      html += '<div class="math-label">Cost Calculation</div>';
+      html += '<div class="math-equation">';
+      html += `<div style="margin-bottom: 8px; color: #6c757d; font-style: italic;">${formulaData.cost.equation}</div>`;
+      formulaData.cost.steps.forEach((step, index) => {
+        html += `<div class="math-step">${step}</div>`;
+      });
+      html += '</div>';
+      html += '</div>';
+      
+      // Display price calculation
+      html += '<div class="math-section">';
+      html += '<div class="math-label">Display Price</div>';
+      html += '<div class="math-equation">';
+      html += `<div style="margin-bottom: 8px; color: #6c757d; font-style: italic;">${formulaData.display.equation}</div>`;
+      formulaData.display.steps.forEach((step, index) => {
+        html += `<div class="math-step">${step}</div>`;
+      });
+      html += '</div>';
+      html += '</div>';
+      
+      // Original price (if exists)
+      if (formulaData.original) {
+        html += '<div class="math-section">';
+        html += '<div class="math-label">Original Price</div>';
+        html += '<div class="math-equation">';
+        html += `<div style="margin-bottom: 8px; color: #6c757d; font-style: italic;">${formulaData.original.equation}</div>`;
+        formulaData.original.steps.forEach((step, index) => {
+          if (step.includes('based:')) {
+            html += `<div style="margin: 8px 0; color: #495057; font-weight: 600;">${step}</div>`;
+          } else {
+            html += `<div class="math-step">${step}</div>`;
+          }
+        });
+        html += '</div>';
+        html += '</div>';
+      }
+      
+      // Min selling price
+      html += '<div class="math-section">';
+      html += '<div class="math-label">Minimum Selling Price</div>';
+      html += '<div class="math-equation">';
+      html += `<div style="margin-bottom: 8px; color: #6c757d; font-style: italic;">${formulaData.minSelling.equation}</div>`;
+      formulaData.minSelling.steps.forEach((step, index) => {
+        if (step.includes('based:')) {
+          html += `<div style="margin: 8px 0; color: #495057; font-weight: 600;">${step}</div>`;
+        } else {
+          html += `<div class="math-step">${step}</div>`;
+        }
+      });
+      html += '</div>';
+      html += '</div>';
+      
+      html += '</div>';
+      return html;
+    }
+    
+    // Update display
+    function updateCalculations() {
+      const dashboardPrice = calculateDashboardPrice();
+      const highestPrice = Math.max(state.goldPricePurchase, state.goldPriceToday);
+      document.getElementById('dashboardPrice').innerHTML = `
+        $${dashboardPrice.toFixed(2)}
+        <div class="formula-inline">
+          max(${state.goldPricePurchase}, ${state.goldPriceToday}) × ${state.markupRate} = ${highestPrice} × ${state.markupRate}
+        </div>
+      `;
+      
+      const results = {
+        '18K': calculate18K24K('18K'),
+        '21K': calculate21K22K('21K'),
+        '22K': calculate21K22K('22K'),
+        '24K': calculate18K24K('24K'),
+        'Watch': calculateWatch()
+      };
+      
+      const resultsHtml = Object.entries(results).map(([karat, data]) => `
+        <div class="result-card">
+          <h3>
+            ${karat} 
+            ${karat !== 'Watch' ? `<span class="karat-badge">${karat}</span>` : ''}
+          </h3>
+          <div class="price-item">
+            <span class="price-label">Cost:</span>
+            <span class="price-value">$${data.cost}</span>
+          </div>
+          <div class="price-item">
+            <span class="price-label">Display Price:</span>
+            <span class="price-value highlight">$${data.displayPrice}</span>
+          </div>
+          <div class="price-item">
+            <span class="price-label">Original Price:</span>
+            <span class="price-value">$${data.originalPrice}</span>
+          </div>
+          <div class="price-item">
+            <span class="price-label">Min Selling Price:</span>
+            <span class="price-value">$${data.minSellingPrice}</span>
+          </div>
+          ${state.showFormulas ? formatFormula(data.formula) : ''}
+        </div>
+      `).join('');
+      
+      document.getElementById('results').innerHTML = resultsHtml;
+    }
+    
+    // Test scenarios
+    function loadTestScenario(scenario) {
+      const scenarios = {
+        scenario1: {
+          goldPricePurchase: 2800,
+          goldPriceToday: 2850,
+          itemWeight: 10,
+          laborMin: 50,
+          laborMax: 100,
+          markupRate: 1.15,
+          discountRate: 0.9,
+          itemCost: 5000
+        },
+        scenario2: {
+          goldPricePurchase: 3000,
+          goldPriceToday: 2950,
+          itemWeight: 5,
+          laborMin: 30,
+          laborMax: 80,
+          markupRate: 1.2,
+          discountRate: 0.85,
+          itemCost: 3000
+        },
+        scenario3: {
+          goldPricePurchase: 2500,
+          goldPriceToday: 2600,
+          itemWeight: 20,
+          laborMin: 40,
+          laborMax: 120,
+          markupRate: 1.25,
+          discountRate: 0.8,
+          itemCost: 8000
+        }
+      };
+      
+      const data = scenarios[scenario];
+      if (data) {
+        Object.assign(state, data);
+        // Update all input fields
+        Object.keys(data).forEach(key => {
+          const element = document.getElementById(key);
+          if (element) {
+            element.value = data[key];
+          }
+        });
+        updateCalculations();
+      }
+    }
+    
+    // Export functionality
+    function exportResults() {
+      const results = {
+        inputs: {
+          goldPricePurchase: state.goldPricePurchase,
+          goldPriceToday: state.goldPriceToday,
+          itemWeight: state.itemWeight,
+          laborMin: state.laborMin,
+          laborMax: state.laborMax,
+          markupRate: state.markupRate,
+          discountRate: state.discountRate,
+          itemCost: state.itemCost
+        },
+        dashboardPrice: calculateDashboardPrice(),
+        results: {
+          '18K': calculate18K24K('18K'),
+          '21K': calculate21K22K('21K'),
+          '22K': calculate21K22K('22K'),
+          '24K': calculate18K24K('24K'),
+          'Watch': calculateWatch()
+        }
+      };
+      
+      const dataStr = JSON.stringify(results, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `pricing-results-${new Date().toISOString().slice(0, 10)}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    }
+    
+    // Initialize app
+    function initApp() {
+      document.getElementById('app').innerHTML = `
+        <div class="container">
+          <div class="header">
+            <h1>Gold Pricing Algorithm Calculator</h1>
+            <p>Precision tool for validating pricing calculations</p>
+          </div>
+          
+          <div class="main-content">
+            <div class="input-panel">
+              <h2>Input Parameters</h2>
+              
+              <div class="section-title">Gold Prices</div>
+              <div class="input-group">
+                <label>24K Gold Price (Purchase Date) $/g</label>
+                <input type="number" id="goldPricePurchase" value="${state.goldPricePurchase}" step="10">
+              </div>
+              <div class="input-group">
+                <label>24K Gold Price (Today) $/g</label>
+                <input type="number" id="goldPriceToday" value="${state.goldPriceToday}" step="10">
+              </div>
+              
+              <div class="section-title">Item Details</div>
+              <div class="input-group">
+                <label>Item Weight (grams)</label>
+                <input type="number" id="itemWeight" value="${state.itemWeight}" step="0.1">
+              </div>
+              
+              <div class="section-title">Labor Costs</div>
+              <div class="input-row">
+                <div class="input-group">
+                  <label>Min Labor $/g</label>
+                  <input type="number" id="laborMin" value="${state.laborMin}" step="5">
+                </div>
+                <div class="input-group">
+                  <label>Max Labor $/g</label>
+                  <input type="number" id="laborMax" value="${state.laborMax}" step="5">
+                </div>
+              </div>
+              
+              <div class="section-title">Pricing Factors</div>
+              <div class="input-row">
+                <div class="input-group">
+                  <label>Markup Rate</label>
+                  <input type="number" id="markupRate" value="${state.markupRate}" step="0.05">
+                </div>
+                <div class="input-group">
+                  <label>Discount Rate</label>
+                  <input type="number" id="discountRate" value="${state.discountRate}" step="0.05">
+                </div>
+              </div>
+              
+              <div class="section-title">Watch Specific</div>
+              <div class="input-group">
+                <label>Item Cost ($)</label>
+                <input type="number" id="itemCost" value="${state.itemCost}" step="100">
+              </div>
+            </div>
+            
+            <div class="results-container">
+              <div class="dashboard-price">
+                <h3>Dashboard Gold Price</h3>
+                <div class="price" id="dashboardPrice">$0.00</div>
+              </div>
+              
+              <div class="results-panel" id="results">
+                <!-- Results will be populated here -->
+              </div>
+              
+              <div class="test-panel">
+                <h3>Test Scenarios & Export</h3>
+                <div class="test-controls">
+                  <button class="btn btn-secondary" id="scenario1">Scenario 1</button>
+                  <button class="btn btn-secondary" id="scenario2">Scenario 2</button>
+                  <button class="btn btn-secondary" id="scenario3">Scenario 3</button>
+                  <button class="btn" id="toggleFormulas">Show Formulas</button>
+                  <button class="btn btn-primary" id="exportData">Export JSON</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Add event listeners
+      const inputs = [
+        'goldPricePurchase', 'goldPriceToday', 'itemWeight',
+        'laborMin', 'laborMax', 'markupRate', 'discountRate', 'itemCost'
+      ];
+      
+      inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', function(e) {
+          state[id] = parseFloat(e.target.value) || 0;
+          updateCalculations();
+        });
+      });
+      
+      // Button listeners
+      document.getElementById('scenario1').addEventListener('click', () => loadTestScenario('scenario1'));
+      document.getElementById('scenario2').addEventListener('click', () => loadTestScenario('scenario2'));
+      document.getElementById('scenario3').addEventListener('click', () => loadTestScenario('scenario3'));
+      
+      document.getElementById('toggleFormulas').addEventListener('click', function() {
+        state.showFormulas = !state.showFormulas;
+        this.textContent = state.showFormulas ? 'Hide Formulas' : 'Show Formulas';
+        updateCalculations();
+      });
+      
+      document.getElementById('exportData').addEventListener('click', exportResults);
+      
+      // Initial calculation
+      updateCalculations();
+    }
+    
+    // Start app when DOM is ready
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+
+</html>

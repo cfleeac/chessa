@@ -1,0 +1,10 @@
+,Cost (Gold price of the day of purchase),Item Display Price/item gram,Original Price,,Minimum Selling Price (Do not lower than the cost x Mark up rate),
+18K,(Gold Price /g x adjustable karat + labour/g ) x item gram,=cost x Markup Rate,=cost x Markup Rate,,=original price x Adjustable discounted rate,
+24K,(Gold Price /g + labour/g ) x item gram,=cost x Markup Rate,=cost x Markup Rate,,=original price x Adjustable discounted rate,
+21K,(Gold Price /g x adjustable karat + labour/g ) x item gram,=Displayed Gold rate x Item gram + labour,=(((24K Gold Price of day of purchase/g x adjustable karat) x markup rate (e.g.1.15))* + Max labour )xgram,=(((24K Gold Price of today/g x adjustable karat) x markup rate (e.g.1.15))* + Max labour )xgram,=(((24K Gold Price of day of purchase/g x adjustable karat) x markup rate (e.g.1.15))* + Min labour )xgram,=(((24K Gold Price of today/g x adjustable karat) x markup rate (e.g.1.15))* + Min labour )xgram
+22K,(Gold Price /g x adjustable karat+ labour/g ) x item gram,=Displayed Gold rate x Item gram + labour,=(((24K Gold Price of day of purchase/g x adjustable karat) x markup rate (e.g.1.15))* + Max labour )xgram,=(((24K Gold Price of today/g x adjustable karat) x markup rate (e.g.1.15))* + Max labour )xgram,=(((24K Gold Price of day of purchase/g x adjustable karat) x markup rate (e.g.1.15))* + Min labour )xgram,=(((24K Gold Price of today/g x adjustable karat) x markup rate (e.g.1.15))* + Min labour )xgram
+,,,* compare and pick the highest,,* compare and pick the highest,
+Watch,Item Cost,=cost x Markup Rate,=cost x Markup Rate,,=original price - 200,
+,,,,,,
+Display Gold Price on Dashboard,"** compare the highest 24K Gold Price of the day of purchase and 24K Gold price of today, use the higest rate for computation",,,,,
+,=(((Higest 24K Gold Price among system /g x adjustable karat) x markup rate (e.g.1.15))*,,,,,
