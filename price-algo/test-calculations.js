@@ -37,14 +37,14 @@ console.log(`  = (${state.goldPricePurchase} × ${factor21K} + ${state.laborMin}
 console.log(`  = (${(state.goldPricePurchase * factor21K).toFixed(2)} + ${state.laborMin}) × ${state.itemWeight}`);
 console.log(`  = ${(state.goldPricePurchase * factor21K + state.laborMin).toFixed(2)} × ${state.itemWeight} = ${cost21K.toFixed(2)}\n`);
 
-// Display Price (FIXED: labour not multiplied by weight)
+// Display Price (FIXED: using laborMax and multiplied by weight)
 const displayGoldRate21K = dashboardPrice * factor21K;
-const displayPrice21K = displayGoldRate21K * state.itemWeight + state.laborMin; // Fixed: laborMin not multiplied by weight
+const displayPrice21K = (displayGoldRate21K + state.laborMax) * state.itemWeight; // Fixed: using laborMax multiplied by weight
 console.log(`Display Price: $${displayPrice21K.toFixed(2)}`);
-console.log(`  Formula: (dashboardPrice × karat) × weight + labour`);
+console.log(`  Formula: (dashboardPrice × karat + laborMax) × weight`);
 console.log(`  Display Gold Rate = ${dashboardPrice.toFixed(2)} × ${factor21K} = ${displayGoldRate21K.toFixed(2)}`);
-console.log(`  = ${displayGoldRate21K.toFixed(2)} × ${state.itemWeight} + ${state.laborMin}`);
-console.log(`  = ${(displayGoldRate21K * state.itemWeight).toFixed(2)} + ${state.laborMin} = ${displayPrice21K.toFixed(2)}\n`);
+console.log(`  = (${displayGoldRate21K.toFixed(2)} + ${state.laborMax}) × ${state.itemWeight}`);
+console.log(`  = ${(displayGoldRate21K + state.laborMax).toFixed(2)} × ${state.itemWeight} = ${displayPrice21K.toFixed(2)}\n`);
 
 // Original Price
 const option1Max = ((state.goldPricePurchase * factor21K * state.markupRate) + state.laborMax) * state.itemWeight;
@@ -74,7 +74,7 @@ console.log(`  MAX(${option1Min.toFixed(2)}, ${option2Min.toFixed(2)}) = ${minSe
 
 // Compare old vs new display price calculation
 console.log('=== Display Price Comparison (21K) ===');
-const oldDisplayPrice21K = displayGoldRate21K * state.itemWeight + (state.laborMin * state.itemWeight);
-console.log(`OLD (incorrect): ${displayGoldRate21K.toFixed(2)} × ${state.itemWeight} + (${state.laborMin} × ${state.itemWeight}) = $${oldDisplayPrice21K.toFixed(2)}`);
-console.log(`NEW (correct):   ${displayGoldRate21K.toFixed(2)} × ${state.itemWeight} + ${state.laborMin} = $${displayPrice21K.toFixed(2)}`);
-console.log(`Difference: $${(oldDisplayPrice21K - displayPrice21K).toFixed(2)}`);
+const oldDisplayPrice21K = displayGoldRate21K * state.itemWeight + state.laborMin; // Old: labour not multiplied by weight and used laborMin
+console.log(`OLD (incorrect): ${displayGoldRate21K.toFixed(2)} × ${state.itemWeight} + ${state.laborMin} = $${oldDisplayPrice21K.toFixed(2)}`);
+console.log(`NEW (correct):   (${displayGoldRate21K.toFixed(2)} + ${state.laborMax}) × ${state.itemWeight} = $${displayPrice21K.toFixed(2)}`);
+console.log(`Difference: $${(displayPrice21K - oldDisplayPrice21K).toFixed(2)}`);
